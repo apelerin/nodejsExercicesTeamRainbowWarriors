@@ -30,8 +30,24 @@ async function waitingForPromise() {
     })
 } 
 
+function averageCalories(calArr) {
+    console.log(calArr)
+    return ss.mean(calArr.map(element => parseInt(element)));
+
+}
+
+
 waitingForPromise().then((value) => {
-    console.log(value)
+    const kellogs = value.filter(element => element.mfr === 'K')
+    const meanCal = {"Moyenne Calorie Kellogs" : averageCalories(kellogs.map(element => element.calories))}
+    fs.writeFile("test.txt", JSON.stringify(meanCal), err => {
+        if(err) {
+            console.error(err)
+            return
+        }
+    }
+       
+    )
 
 })
 
