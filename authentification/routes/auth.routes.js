@@ -8,7 +8,11 @@ router.get('/', function(req, res) {
     })
 })
 
-router.route('/user')
-    .post(authController)
-
+router.route('/register')
+    .post(authController.addUser)
+    
+router.route('/login')
+    .post(authController.login)
+router.route('/update')
+    .put(authController.updateUser)
 module.exports = router
