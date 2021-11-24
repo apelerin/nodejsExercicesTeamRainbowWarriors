@@ -36,12 +36,14 @@ module.exports.login = async function(req, res) {
         res.end()
         return
     } 
-    res.status(200).send({auth : true, user: user})
+    res.status(200).send({auth: true, user: user, token: token})
 }
 
 module.exports.updateUser = async function(req, res) {
     const queryParam =  req.body
-    queryParam.password = bcrypt.hashSync(queryParam.password, 8)
+    if (queryParam.password) {
+        queryParam.password = bcrypt.hashSync(queryParam.password, 8)
+    }
     await userSchema.updateOne({mail: req.body.mail}, req.body); //use id instead of mail for a better future
     const user = await userSchema.findOne(queryParam)
     if(!user) {
