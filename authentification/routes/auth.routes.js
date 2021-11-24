@@ -10,9 +10,11 @@ router.get('/', function(req, res) {
 
 router.route('/register')
     .post(authController.addUser)
-    
 router.route('/login')
     .post(authController.login)
 router.route('/update')
     .put(authController.updateUser)
+router.route('/delete')
+    .delete(authController.deleteUser)
+
 module.exports = router

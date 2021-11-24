@@ -1,6 +1,12 @@
 const userSchema = require('../model/user')
 
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const createToken = (id) => {
+    return jwt.sign({id}, "CECIESTUNTOKEN", {
+        expiresIn: 3600
+    })
+}
 
 module.exports.addUser = async function(req, res) {
     const user = new userSchema();
@@ -15,12 +21,12 @@ module.exports.addUser = async function(req, res) {
         }
         res.status(200).send({user : user})
     });
-    
 }
 
 module.exports.login = async function(req, res) {
     const queryParam = {mail : req.body.mail}
     const user = await userSchema.findOne(queryParam).exec();
+    const token = createToken(user._id)
     if(!user) {
         res.status(404).send('unknown user')
         res.end()
@@ -34,7 +40,26 @@ module.exports.login = async function(req, res) {
 }
 
 module.exports.updateUser = async function(req, res) {
-    
-    
+    const queryParam =  req.body
+    queryParam.password = bcrypt.hashSync(queryParam.password, 8)
+    await userSchema.updateOne({mail: req.body.mail}, req.body); //use id instead of mail for a better future
+    const user = await userSchema.findOne(queryParam)
+    if(!user) {
+        res.status(404).send('unknown user')
+        res.end()
+        return
+    }
+    res.status(200).send({updated: true, user: user})
+}
 
+module.exports.deleteUser = async function(req, res) {
+    const queryParam = {mail: req.body.mail} //temporary, use id instead
+    //await userSchema.deleteOne(queryParam);
+    const user = await userSchema.findOne(queryParam)
+    if(!user) {
+        res.status(200).send('User successfully deleted')
+        res.end()
+        return
+    }
+    res.status(418).send("User " + user._id + " not deleted")
 }
