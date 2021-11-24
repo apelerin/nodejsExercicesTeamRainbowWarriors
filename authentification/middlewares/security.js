@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = "CECIESTUNTOKEN";
+const userSchema = require('../model/user');
 
 exports.checkJwt = async (req, res, next) => {
     console.log('hello le token')
@@ -19,6 +20,17 @@ exports.checkJwt = async (req, res, next) => {
     } else {
         return res.status(401).json('token_required');
     }
+}
 
-
+exports.checkAdmin = async (req, res, next) => {
+    const user = await userSchema.findOne({mail: req.body.mail}).exec();
+    console.log(user)
+    if (user) {
+        if (user.isAdmin) {
+            next()
+        } else {
+            return res.status(401).json("no authorize")
+        }
+    }
+    console.log( "test")
 }

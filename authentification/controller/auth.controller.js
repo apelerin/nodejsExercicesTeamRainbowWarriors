@@ -39,6 +39,18 @@ module.exports.login = async function(req, res) {
     res.status(200).send({auth: true, user: user, token: token})
 }
 
+module.exports.getUser = async function(req, res) {
+    const queryParam = {id: req.params.id}
+    const user = await userSchema.findOne(queryParam).exec();
+    if(!user) {
+        res.status(404).send('unknown user')
+        res.end()
+        return
+    }
+    res.status(200).send({user: user})
+}
+
+
 module.exports.updateUser = async function(req, res) {
     const queryParam =  req.body
     if (queryParam.password) {
