@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = "CECIESTUNTOKEN";
 const userSchema = require('../model/user');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 exports.checkJwt = async (req, res, next) => {
     console.log('hello le token')
@@ -32,5 +33,11 @@ exports.checkAdmin = async (req, res, next) => {
             return res.status(401).json("no authorize")
         }
     }
-    console.log( "test")
+}
+
+exports.checkIfProvidedIdIsValid = async (req, res, next) => {
+    if (ObjectId.isValid(req.body.id)) {
+        next()
+    }
+    return res.status('400').json("Id not valid")
 }

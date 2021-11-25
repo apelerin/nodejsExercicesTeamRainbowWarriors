@@ -14,10 +14,10 @@ router.route('/register')
 router.route('/login')
     .post(authController.login)
 router.route('/update')
-    .put(security.checkJwt, authController.updateUser)
+    .put(security.checkIfProvidedIdIsValid, security.checkJwt, authController.updateUser)
 router.route('/delete')
-    .delete(security.checkJwt, authController.deleteUser)
+    .delete(security.checkIfProvidedIdIsValid, security.checkJwt, authController.deleteUser)
 router.route('/me/:id')
-    .get(security.checkAdmin, authController.getUser)
+    .get(security.checkIfProvidedIdIsValid, security.checkAdmin, authController.getUser)
 
 module.exports = router
